@@ -30,7 +30,7 @@ on:
       connection_program:
         description: 'Select program (RDP, VNC, NoMachine)'
         required: true
-        default: 'RDP'
+        default: 'VNC'
       bios_mode:
         description: 'Choose firmware mode: UEFI or BIOS (default UEFI)'
         required: true
