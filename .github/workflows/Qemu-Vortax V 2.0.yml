@@ -65,24 +65,34 @@ jobs:
 
       - name: Prepare user and sudo
         run: |
-          echo "${USERNAME}:${PASSWORD}" | sudo chpasswd
-          echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/${USERNAME}
-          sudo mkdir -p /mnt/tmp /mnt/cache
-          sudo chmod -R 777 /mnt/tmp /mnt/cache
+          echo "Setting password for user..."
+          echo "${USERNAME}:${PASSWORD}" | sudo chpasswd > /dev/null 2>&1
+          echo "Configuring sudoers..."
+          echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/${USERNAME} > /dev/null 2>&1
+          echo "Creating temp directories..."
+          sudo mkdir -p /mnt/tmp /mnt/cache > /dev/null 2>&1
+          echo "Fixing permissions for temp directories..."
+          sudo chmod -R 777 /mnt/tmp /mnt/cache > /dev/null 2>&1
 
       - name: Setup Connection (Tailscale or Ngrok)
         run: |
           METHOD="${{ github.event.inputs.connection_method }}"
           if [ "$METHOD" = "tailscale" ]; then
-            curl -fsSL https://tailscale.com/install.sh | sudo sh
+            echo "Installing Tailscale..."
+            curl -fsSL https://tailscale.com/install.sh | sudo sh > /dev/null 2>&1
+            echo "Starting Tailscale..."
             sudo tailscale up --authkey "${TAILSCALE_AUTHKEY}" --hostname "gh-xfce-vm-${{ github.run_id }}" --accept-routes --accept-dns=false
             TS_IP=$(sudo tailscale ip -4 | head -n1)
             echo "CONNECTION_IP=$TS_IP" >> $GITHUB_ENV
             echo "CONNECTION_TYPE=Tailscale" >> $GITHUB_ENV
           elif [ "$METHOD" = "ngrok" ]; then
-            wget -q -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip
-            unzip -q ngrok.zip
-            sudo mv ngrok /usr/local/bin/
+            echo "Downloading Ngrok..."
+            wget -q -O ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.zip > /dev/null 2>&1
+            echo "Extracting Ngrok..."
+            unzip -q ngrok.zip > /dev/null 2>&1
+            echo "Installing Ngrok..."
+            sudo mv ngrok /usr/local/bin/ > /dev/null 2>&1
+            echo "Configuring Ngrok auth..."
             ngrok config add-authtoken "${NGROK_AUTH}"
             echo "CONNECTION_TYPE=Ngrok" >> $GITHUB_ENV
           else
@@ -91,40 +101,56 @@ jobs:
 
       - name: Install XFCE + RDP + NoMachine
         run: |
-          sudo apt-get update -qq
-          sudo apt install -y megatools python3-pip
-          pip install rich requests
-          curl -L "https://gitlab.com/MR.English2008/Mega_Gen/-/raw/main/maga_gen_cli.py" -o mega_gen_cli.py
-          chmod +x mega_gen_cli.py
+          echo "Updating package lists..."
+          sudo apt-get update -qq > /dev/null 2>&1
+          echo "Installing MegaTools + pip..."
+          sudo apt install -y megatools python3-pip > /dev/null 2>&1
+          echo "Installing Python libs..."
+          pip install rich requests > /dev/null 2>&1
+          echo "Downloading Mega CLI..."
+          curl -L "https://gitlab.com/MR.English2008/Mega_Gen/-/raw/main/maga_gen_cli.py" -o mega_gen_cli.py > /dev/null 2>&1
+          chmod +x mega_gen_cli.py > /dev/null 2>&1
+          echo "Running Mega CLI..."
           python3 mega_gen_cli.py > /dev/null 2>&1
-          sudo apt-get install -y jq tigervnc-viewer wmctrl wget internetarchive
-          wget -q https://web9001.nomachine.com/download/9.2/Linux/nomachine_9.2.18_3_amd64.deb -O nomachine.deb
-          sudo dpkg -i nomachine.deb || sudo apt-get -f install -y
-          rm nomachine.deb
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq xfce4 xfce4-goodies xorg dbus-x11 xrdp
-          echo "startxfce4" | sudo tee /home/${USERNAME}/.xsession
-          sudo chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.xsession
-          echo "exec startxfce4" | sudo tee /etc/skel/.xsession
-          echo "startxfce4" | sudo tee /etc/skel/.xinitrc
-          sudo ufw allow 4000/tcp
-          sudo ufw allow 4011:4999/tcp
-          sudo ufw allow 5900/tcp
-          sudo ufw allow 3389/tcp
-          sudo ufw --force enable || true
-          sudo systemctl enable --now xrdp
-          sudo systemctl restart xrdp
+          echo "Installing VNC, wmctrl, wget, IA..."
+          sudo apt-get install -y jq tigervnc-viewer wmctrl wget internetarchive > /dev/null 2>&1
+          echo "Downloading NoMachine..."
+          wget -q https://web9001.nomachine.com/download/9.2/Linux/nomachine_9.2.18_3_amd64.deb -O nomachine.deb > /dev/null 2>&1
+          echo "Installing NoMachine..."
+          sudo dpkg -i nomachine.deb > /dev/null 2>&1 || sudo apt-get -f install -y > /dev/null 2>&1
+          rm nomachine.deb > /dev/null 2>&1
+          echo "Installing XFCE + XRDP..."
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq xfce4 xfce4-goodies xorg dbus-x11 xrdp > /dev/null 2>&1
+          echo "Configuring .xsession..."
+          echo "startxfce4" | sudo tee /home/${USERNAME}/.xsession > /dev/null 2>&1
+          sudo chown ${USERNAME}:${USERNAME} /home/${USERNAME}/.xsession > /dev/null 2>&1
+          echo "Configuring system xsession..."
+          echo "exec startxfce4" | sudo tee /etc/skel/.xsession > /dev/null 2>&1
+          echo "startxfce4" | sudo tee /etc/skel/.xinitrc > /dev/null 2>&1
+          echo "Configuring firewall..."
+          sudo ufw allow 4000/tcp > /dev/null 2>&1
+          sudo ufw allow 4011:4999/tcp > /dev/null 2>&1
+          sudo ufw allow 5900/tcp > /dev/null 2>&1
+          sudo ufw allow 3389/tcp > /dev/null 2>&1
+          sudo ufw --force enable > /dev/null 2>&1 || true
+          echo "Starting XRDP..."
+          sudo systemctl enable --now xrdp > /dev/null 2>&1
+          sudo systemctl restart xrdp > /dev/null 2>&1
 
       - name: Install QEMU, OVMF, and components
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y socat
-          sudo apt-get install -y -qq qemu-system-x86 ovmf novnc websockify wget curl unzip p7zip-full unrar-free tar python3-pip
-          pip install internetarchive
-          git clone https://github.com/stck-lzm/badown ~/badown
-          chmod +x ~/badown/badown
-          sudo touch ~/badown/.badown.tmp
-
-      - name: Determine source URL (Modified Logic)
+          echo "Updating package lists..."
+          sudo apt-get update -qq > /dev/null 2>&1
+          echo "Installing QEMU + components..."
+          sudo apt-get install -y -qq qemu-system-x86 ovmf novnc websockify wget curl unzip p7zip-full unrar-free tar python3-pip > /dev/null 2>&1
+          echo "Installing internetarchive..."
+          pip install internetarchive > /dev/null 2>&1
+          echo "Cloning badown..."
+          git clone https://github.com/stck-lzm/badown ~/badown > /dev/null 2>&1
+          chmod +x ~/badown/badown > /dev/null 2>&1
+          sudo touch ~/badown/.badown.tmp > /dev/null 2>&1
+          
+      - name: Determine source URL
         id: determine_url
         run: |
           CHOICE="${{ github.event.inputs.system_choice }}"
@@ -463,7 +489,7 @@ jobs:
             echo
             echo ">>> RDP Connection: ${{ env.CONNECTION_IP }}"
             echo ">>> VNC Connection: ${{ env.CONNECTION_IP }}:5900"
-            echo ">>> NoMachine Connection: ${{ env.CONNECTION_IP }}4000"
+            echo ">>> NoMachine Connection: ${{ env.CONNECTION_IP }}:4000"
           else
             if [ "${{ github.event.inputs.connection_program }}" = "RDP" ]; then
               echo ">>> RDP (Ngrok): ${{ env.RDP_URL }}"
@@ -507,9 +533,8 @@ jobs:
             echo "[Login]" > .megarc
             echo "Username = $MEGA_EMAIL" >> .megarc
             echo "Password = $MEGA_PASSWORD" >> .megarc
-            echo "Username = $MEGA_EMAIL"
-            echo "Password = $MEGA_PASSWORD"
-            echo " list mega files"
+            echo "MEGA.email = $MEGA_EMAIL"
+            echo "MEGA.Password = $MEGA_PASSWORD"
             megals > /dev/null 2>&1
             echo " list /mnt files "
             ls -lh /mnt | grep -E '\.7z$|\.qcow2$|\.iso$' | awk '{split($5,size,""); if($5 ~ /G/){print $9, $5} else {printf "%s %.2fG\n", $9, $5/1024/1024/1024}}'
