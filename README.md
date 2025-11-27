@@ -108,10 +108,10 @@ Go to **Settings → Secrets → Actions → New repository secret** and add the
 | `pop_os` | ISO/QCOW2 | Pop!_OS optimized for developers and creators. | ![PopOS](assets/popos.png) |
 | `ubuntu` | ISO | Classic Ubuntu desktop with XFCE, stable and lightweight. | ![Ubuntu](assets/ubuntu.png) |
 | `debian_qcow2` | QCOW2 | Debian 12 Bookworm cloud image preconfigured for QEMU. | Command Line interface |
-| `win7` | QCOW2 | Windows 7 Professional with classic interface and broad software support. | ![Win7](assets/win7.png) |
-| `win8.1` | QCOW2 | Windows 8.1 with modern UI and improved performance over Win8. | ![Win8.1](assets/win8.1.png) |
-| `win10` | QCOW2 | Windows 10 stable release with mainstream app support. | ![Win10](assets/win10.png) |
 | `win11` | QCOW2 | Windows 11 latest release optimized for security and UI. | ![Win11](assets/win11.png) |
+| `win10` | QCOW2 | Windows 10 stable release with mainstream app support. | ![Win10](assets/win10.png) |
+| `win8.1` | QCOW2 | Windows 8.1 with modern UI and improved performance over Win8. | ![Win8.1](assets/win8.1.png) |
+| `win7` | QCOW2 | Windows 7 Professional with classic interface and broad software support. | ![Win7](assets/win7.png) |
 | `winVista` | QCOW2 | Windows Vista with Aero interface and legacy support. | ![WinVista](assets/winVista.png) |
 | `winXP` | QCOW2 | Windows XP classic edition, lightweight and legacy software compatible. | ![WinXP](assets/winXP.png) |
 
