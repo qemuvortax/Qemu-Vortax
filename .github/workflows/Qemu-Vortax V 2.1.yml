@@ -547,7 +547,10 @@ jobs:
           echo "Session ended after ${RUNTIME} minutes."
           
       - name: Compressing and uploading the QCOW2 file
+        if: always()
         run: |
+          UPLOAD_QCOW2="${{ github.event.inputs.upload_qcow2 }}"
+          VM="${{ github.event.inputs.vm_name }}"
           sudo pkill -9 qemu || true
           if [[ "$UPLOAD_QCOW2" == "yes" ]]; then
  
