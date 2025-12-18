@@ -219,7 +219,6 @@ jobs:
           ISO_URLS["zorin"]="https://fosszone.csd.auth.gr/zorinos/18/Zorin-OS-18-Core-64-bit.iso"
           
           declare -A QCOW2_URLS
-          QCOW2_URLS["bazite"]="https://dummy.link/bazite.7z"
           QCOW2_URLS["bliss"]="https://www.mediafire.com/file/2zuxhk4dtqa735l/bliss.7z/"
           QCOW2_URLS["cutefish"]="https://www.mediafire.com/file/cskqtp25wya8p4e/cutefish.7z"
           QCOW2_URLS["debian"]="https://www.mediafire.com/file/4x02re7l2ge3a6h/debian.7z"
@@ -230,7 +229,6 @@ jobs:
           QCOW2_URLS["kali"]="https://kali.mirror.garr.it/kali-images/current/kali-linux-2025.3-qemu-amd64.7z"
           QCOW2_URLS["manjaro"]="https://www.mediafire.com/file/ynn1o8flu6v8mhd/manjaro.7z"
           QCOW2_URLS["mint"]="https://www.mediafire.com/file/a4qyactev4kzc0q/mint.7z/"
-          QCOW2_URLS["pear"]="https://dummy.link/pear.7z"
           QCOW2_URLS["pop_os"]="https://www.mediafire.com/file/lbrebo479z4fq3g/pop_os.7z"
           QCOW2_URLS["ubuntu"]="https://www.mediafire.com/file/m2x4f34hdxqfndd/ubuntu.7z"
           QCOW2_URLS["Vista"]="https://www.mediafire.com/file/f9fqa9oupypugbo/Vista.7z"
